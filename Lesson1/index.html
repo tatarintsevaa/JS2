@@ -1,10 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
 </head>
 <body>
+<main>
+    <div class="catalog">
+        <div class="item"><h3>Компьютерная мышь</h3>
+            <p>400</p></div>
+        ,
+        <div class="item"><h3>Жесткий диск SSD 1Tb</h3>
+            <p>10000</p></div>
+        ,
+        <div class="item"><h3>Материнская плата</h3>
+            <p>4000</p></div>
+        ,
+        <div class="item"><h3>Видео-карта</h3>
+            <p>15000</p></div>
+    </div>
+</main>
+<script>
+    const goods = [
+        {title: 'Компьютерная мышь', price: 400},
+        {title: 'Жесткий диск SSD 1Tb', price: 10000},
+        {title: 'Материнская плата', price: 4000},
+        {title: 'Видео-карта', price: 15000},
+    ];
+
+    const renderList = (items) => {
+        const renderedGoods = items.map(renderItem);
+
+        document.querySelector('.catalog').innerHTML = renderedGoods;
+    };
+
+    const renderItem = (item) => {
+        return `<div class="item"><h3>${item.title}</h3><p>${item.price}</p></div>`;
+    };
+
+    renderList(goods);
+</script>
 
 </body>
 </html>
