@@ -33,6 +33,8 @@ const renderProduct = ({title, price}, image = 'http://via.placeholder.com/150x1
 //     });
 // };
 
+
+// Но так лучше
 /**
  * Рендерит товары
  * @param list массив с объектами товаров
