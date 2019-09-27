@@ -1,0 +1,41 @@
+* {
+  margin: 0;
+  padding: 0; }
+
+input {
+  height: 18px;
+  width: 18px; }
+
+header {
+  height: 100px;
+  background-color: lightcyan;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+
+.burgers {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around; }
+
+.options {
+  height: 100px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: lightgray; }
+  .options__checkbox {
+    margin-right: 10px; }
+
+.total {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+  .total__price {
+    margin-right: 100px; }
+  .total__price, .total__calories {
+    font-size: 20px; }
+
+/*# sourceMappingURL=style.css.map */
