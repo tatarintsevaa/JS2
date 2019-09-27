@@ -1,8 +1,8 @@
 const products = [
-    { title: 'Компьютерная мышь', price: 400 },
-    { title: 'Жесткий диск SSD 1Tb', price: 10000 },
-    { title: 'Материнская плата', price: 4000 },
-    { title: 'Видео-карта', price: 15000 },
+    {title: 'Компьютерная мышь', price: 400},
+    {title: 'Жесткий диск SSD 1Tb', price: 10000},
+    {title: 'Материнская плата', price: 4000},
+    {title: 'Видео-карта', price: 15000},
 ];
 
 // сократил запись, убрав {} и return
@@ -40,7 +40,8 @@ const renderProduct = ({title, price}, image = 'http://via.placeholder.com/150x1
  * @param list массив с объектами товаров
  */
 const renderProducts = list => {
-        const item = document.querySelector('.products');
-        list.forEach((product) => item.insertAdjacentHTML('afterbegin', renderProduct(product)))};
+    const item = document.querySelector('.products');
+    list.forEach((product) => item.insertAdjacentHTML('afterbegin', renderProduct(product)))
+};
 
 renderProducts(products);
