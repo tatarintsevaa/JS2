@@ -39,8 +39,8 @@ const renderProduct = ({title, price}, image = 'http://via.placeholder.com/150x1
  * Рендерит товары
  * @param list массив с объектами товаров
  */
-const renderProducts = list =>
-        list.forEach((product) => document.querySelector('.products')
-            .insertAdjacentHTML('afterbegin', renderProduct(product)));
+const renderProducts = list => {
+        const item = document.querySelector('.products');
+        list.forEach((product) => item.insertAdjacentHTML('afterbegin', renderProduct(product)))};
 
 renderProducts(products);
