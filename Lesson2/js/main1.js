@@ -13,10 +13,10 @@ class ProductList {
 
     fetchItems() {
         this.items = [
-            {title: 'Компьютерная мышь', price: 400},
-            {title: 'Жесткий диск SSD 1Tb', price: 10000},
-            {title: 'Материнская плата', price: 4000},
-            {title: 'Видео-карта', price: 15000},
+            {id: 1, title: 'Компьютерная мышь', price: 400, quantity: 1},
+            {id: 2, title: 'Жесткий диск SSD 1Tb', price: 10000, quantity: 1},
+            {id: 3, title: 'Материнская плата', price: 4000, quantity: 1},
+            {id: 4, title: 'Видео-карта', price: 15000, quantity: 1},
         ];
     }
 
@@ -31,12 +31,14 @@ class ProductList {
      * @returns {number} Возвращает сумму всех товаров
      */
     totalPrice() {
-        return this.items.reduce((sum, current) => sum + current.price ,0);
+        return this.items.reduce((sum, current) => sum + current.price, 0);
     }
+
 }
 
 class ProductItem {
     constructor(product, image = 'http://via.placeholder.com/150x120') {
+        this.id = product.id;
         this.title = product.title;
         this.price = product.price;
         this.image = image;
@@ -48,37 +50,96 @@ class ProductItem {
         <div class="product-item__text">
             <h3>${this.title}</h3>
             <p>${this.price} &#8381;</p>
-            <button class="by-btn">Купить</button>
+            <button class="by-btn" data-id="${this.id}" data-price="${this.price}" data-title="${this.title}">Купить</button>
         </div>
      </div>`
     }
 }
 
 class CartList {
+    constructor() {
+        this.addedItems = [];
+    }
+
+    render() {
+        const block = document.querySelector('.cart-drop');
+        block.innerHTML = '';
+        for (const item of this.addedItems) {
+            const addedItem = new CartItem(item);
+            block.insertAdjacentHTML('beforeend', addedItem.render());
+        }
+
+
+    }
+
+    addItems(id, title, price) {
+        let find = this.addedItems.find(product => product.id === id);
+        if (find) {
+            find.quantity++;
+            console.log(find);
+            this.updateCart(find);
+        } else {
+            this.addedItems.push({id: id, title: title, price: price, quantity: 1});
+            this.render();
+        }
+
+    }
+
+    updateCart(product) {
+        const block = document.querySelector(`.cart-item[data-id="${product.id}"]`);
+        block.querySelector('.cart-item__quantity').textContent = product.quantity;
+    }
+
+    removeItem(id) {
+        this.addedItems.splice(this.getRemovedItemIndex(id));
+        this.render();
+    }
+
+    getRemovedItemIndex(id) {
+        return this.addedItems.findIndex(x => x.id === id)
+    }
+
 
 }
 
+
 class CartItem {
-    constructor(product, img = 'http://via.placeholder.com/50x40') {
+    constructor(product, image = 'http://via.placeholder.com/50x40') {
+        this.id = product.id;
         this.title = product.title;
         this.price = product.price;
+        this.quantity = product.quantity;
+        this.image = image;
+        //this.quantity = quantity;
     }
+
     render() {
-        return `<div class="cart-drop invisible">
-            <div class="cart-item">
-                <img src="" alt="img">
-                <h5 class="cart-item__text">fjjhjhjhjj</h5>
-                <p class="cart-item__quantity">qeada</p>
-                <p class="cart-item__price">11111</p>
-                <button class="btn-remove">X</button>
-            </div>
-        </div>`
+        return `
+            <div class="cart-item" data-id="${this.id}">
+                <img src="${this.image}" alt="img">
+                <h5 class="cart-item__text">${this.title}</h5>
+                <p class="cart-item__quantity">${this.quantity}</p>
+                <p class="cart-item__price">${this.price}</p>
+                <button class="btn-rem" data-id="${this.id}">
+                <i class="fas fa-times"></i></button>
+            </div>`
     }
+
+
 }
 
 const list = new ProductList();
 list.fetchItems();
 list.render();
+const cart = new CartList();
+window.onload = () => cart.render();
+
+document.querySelectorAll('.by-btn').forEach(el => {
+    el.addEventListener('click', e => {
+        cart.addItems(e.target.dataset.id, e.target.dataset.title, e.target.dataset.price)
+    })
+});
+
 console.log(list.totalPrice());
 
 
