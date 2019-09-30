@@ -76,7 +76,7 @@ class CartList {
         let find = this.addedItems.find(product => product.id === id);
         if (find) {
             find.quantity++;
-            console.log(find);
+            // console.log(find);
             this.updateCart(find);
         } else {
             this.addedItems.push({id: id, title: title, price: price, quantity: 1});
@@ -91,14 +91,34 @@ class CartList {
     }
 
     removeItem(id) {
-        this.addedItems.splice(this.getRemovedItemIndex(id));
-        this.render();
+        let find = this.addedItems.find(product => product.id === id);
+        if (find.quantity > 1) {
+            find.quantity--
+            this.updateCart(find);
+        } else {
+            this.addedItems.splice(this.getRemovedItemIndex(id));
+            this.render();
+        }
+
     }
 
     getRemovedItemIndex(id) {
         return this.addedItems.findIndex(x => x.id === id)
     }
 
+    init() {
+        document.querySelectorAll('.by-btn').forEach(el => {
+            el.addEventListener('click', e => {
+                this.addItems(e.target.dataset.id, e.target.dataset.title, e.target.dataset.price)
+            })
+        });
+
+        document.querySelector('.cart-drop').addEventListener('click', el => {
+            if (el.target.classList.contains('btn-reb')) {
+            }
+            this.removeItem(el.target.dataset.id);
+        })
+    }
 
 }
 
@@ -120,8 +140,7 @@ class CartItem {
                 <h5 class="cart-item__text">${this.title}</h5>
                 <p class="cart-item__quantity">${this.quantity}</p>
                 <p class="cart-item__price">${this.price}</p>
-                <button class="btn-rem" data-id="${this.id}">
-                <i class="fas fa-times"></i></button>
+                <button class="btn-rem" data-id="${this.id}">x</button>
             </div>`
     }
 
@@ -132,15 +151,8 @@ const list = new ProductList();
 list.fetchItems();
 list.render();
 const cart = new CartList();
-window.onload = () => cart.render();
+window.onload = () => cart.init();
 
-document.querySelectorAll('.by-btn').forEach(el => {
-    el.addEventListener('click', e => {
-        cart.addItems(e.target.dataset.id, e.target.dataset.title, e.target.dataset.price)
-    })
-});
 
 console.log(list.totalPrice());
-
-
 
