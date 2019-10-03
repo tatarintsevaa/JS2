@@ -1,0 +1,103 @@
+*
+  margin: 0
+  padding: 0
+
+$dark: #3C3F41
+$light: #eeeeee
+
+header
+  height: 100px
+  display: flex
+  justify-content: flex-end
+  align-items: center
+  background-color: $dark
+  margin-bottom: 20px
+
+.cart-block
+  position: relative
+.cart-drop
+  position: absolute
+  margin-top: 10px
+  background-color: #ffffff
+  border: 1px solid $light
+  right: 50px
+  padding: 5px
+
+.cart-item
+  display: flex
+  justify-content: space-between
+  width: 250px
+  padding: 5px
+  align-items: center
+
+.invisible
+  display: none
+
+
+.btn-cart
+  text-transform: uppercase
+  font-size: 20px
+  height: 40px
+  padding-right: 10px
+  padding-left: 10px
+  margin-right: 100px
+  border-radius: 10px 10px 10px 10px
+  border: 1px solid #fff
+  background-color: #fff
+  //box-shadow: 0 0 10px rgba(0,0,0,0.5)
+  outline: none
+  line-height: 20px
+  transition: all 0.2s
+  &:hover
+    cursor: pointer
+    background-color: $dark
+    color: #ffffff
+  &:active
+
+
+.products
+  width: 60%
+  display: flex
+  justify-content: space-around
+  flex-wrap: wrap
+  margin-bottom: 10px
+main
+  display: flex
+  justify-content: center
+.product-item
+  min-height: 250px
+  width: 150px
+  background-color: $light
+  box-sizing: border-box
+  border-radius: 10px 10px 10px 10px
+  &__text
+    height: 100px
+    padding: 10px
+    display: flex
+    flex-direction: column
+    justify-content: space-around
+    & h3
+      font-size: 18px
+  & img
+    border-radius: 10px 10px 0 0
+
+.by-btn
+  font-size: 18px
+  width: max-content
+  height: 35px
+  padding-right: 5px
+  padding-left: 5px
+  border: 1px solid $dark
+  border-radius: 10px 10px 10px 10px
+  //box-shadow: 0 0 10px rgba(0,0,0,0.5)
+  background-color: $dark
+  outline: none
+  line-height: 18px
+  transition: all 0.2s
+  color: #fff
+  &:hover
+    cursor: pointer
+    background-color: $light
+    color: black
+  //&:active
+  //  box-shadow: none

@@ -93,7 +93,7 @@ class CartList {
     removeItem(id) {
         let find = this.addedItems.find(product => product.id === id);
         if (find.quantity > 1) {
-            find.quantity--
+            find.quantity--;
             this.updateCart(find);
         } else {
             this.addedItems.splice(this.getRemovedItemIndex(id));
