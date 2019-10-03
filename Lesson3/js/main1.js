@@ -17,7 +17,8 @@ function sendRequest(url) {
 }
 
 class ProductList {
-    constructor() {
+    constructor(container) {
+        this.container = container;
         this.items = [];
     }
 
@@ -29,18 +30,11 @@ class ProductList {
     }
 
     render() {
-        const block = document.querySelector('.products');
+        const block = document.querySelector(this.container);
         this.items.forEach((product) => block.insertAdjacentHTML('afterbegin', new ProductItem(product)
             .render()))
     };
 
-    /**
-     * Метод суммы товаров
-     * @returns {number} Возвращает сумму всех товаров
-     */
-    totalPrice() {
-        return this.items.reduce((sum, current) => sum + current.price, 0);
-    }
 
 }
 
@@ -78,11 +72,18 @@ class CartList {
 
     render() {
         const block = document.querySelector('.cart-drop');
-        block.innerHTML = '';
-        for (const item of this.addedItems) {
-            const addedItem = new CartItem(item);
-            block.insertAdjacentHTML('beforeend', addedItem.render());
+        if (this.addedItems.length === 0) {
+            block.innerHTML = `<p class="cart-empty">Корзина пуста</\p>`;
+            block.querySelector('<p>').classList.toggle('invisible');
+        } else {
+            block.innerHTML = '';
+            for (const item of this.addedItems) {
+                const addedItem = new CartItem(item);
+                block.insertAdjacentHTML('afterbegin', addedItem.render());
+            }
         }
+        block.insertAdjacentHTML('beforeend', `<p>Общая стоимость: <span class="total-price">
+            ${this.totalPrice()}</span>&#8381;</p>`)
     }
 
     addItems(id, title, price) {
@@ -100,6 +101,7 @@ class CartList {
     updateCart(product) {
         const block = document.querySelector(`.cart-item[data-id="${product.id}"]`);
         block.querySelector('.cart-item__quantity').textContent = product.quantity;
+        document.querySelector('.total-price').innerHTML = this.totalPrice();
     }
 
     removeItem(id) {
@@ -108,8 +110,12 @@ class CartList {
             find.quantity--;
             this.updateCart(find);
         } else {
-            this.addedItems.splice(this.getRemovedItemIndex(id));
-            this.render();
+            this.addedItems.splice(this.getRemovedItemIndex(id), 1);
+            if (this.addedItems.length === 0) {
+                this.render();
+            }
+            document.querySelector(`.cart-item[data-id="${id}"]`).remove();// вот это подгядел,
+            // так как не понравилось, что он рендерит каждый раз заново
         }
 
     }
@@ -125,16 +131,20 @@ class CartList {
 
         document.querySelectorAll('.by-btn').forEach(el => {
             el.addEventListener('click', e => {
-                this.addItems(e.target.dataset.id, e.target.dataset.title, e.target.dataset.price)
+                this.addItems(+e.target.dataset.id, e.target.dataset.title, +e.target.dataset.price)
             })
         });
 
         document.querySelector('.cart-drop').addEventListener('click', el => {
             if (el.target.classList.contains('btn-reb')) {
             }
-            this.removeItem(el.target.dataset.id);
+            this.removeItem(+el.target.dataset.id);
             console.log(el.target.classList);
         })
+    }
+
+    totalPrice() {
+        return this.addedItems.reduce((sum, current) => sum + current.price * current.quantity, 0);
     }
 
 }
@@ -156,13 +166,13 @@ class CartItem {
                 <img src="${this.image}" alt="img">
                 <h5 class="cart-item__text">${this.title}</h5>
                 <p class="cart-item__quantity">${this.quantity}</p>
-                <p class="cart-item__price">${this.price}</p>
+                <p class="cart-item__price">${this.price} &#8381;</p>
                 <button class="btn-rem" data-id="${this.id}">x</button>
             </div>`
     }
 }
 
-const list = new ProductList();
+const list = new ProductList('.products');
 list.fetchItems().then(() => {
     list.render();
 });
@@ -176,8 +186,4 @@ cart.fetchItems().then(() => {
 
 
 
-
-
-
-console.log(list.totalPrice());
 
