@@ -1,10 +1,20 @@
-/*
-ответ на 1ый вопрос.
-Должны быть родительские классы Item и List от которых будут наследоваться классы товаров, товаров корзины и списков
- тоовара и корзины.
- У товаров должны быть методы добавления товара( в списке товаров) в корзину по клику.У товаров в корзине -
- удаления/изменения количества и метод подсчета общей стоимости.
- */
+function sendRequest(url) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status !== 200) {
+                    reject();
+                }
+                const products = JSON.parse(xhr.responseText);
+                resolve(products)
+            }
+        };
+        xhr.send();
+    } )
+}
 
 class ProductList {
     constructor() {
@@ -12,12 +22,10 @@ class ProductList {
     }
 
     fetchItems() {
-        this.items = [
-            {id: 1, title: 'Компьютерная мышь', price: 400, quantity: 1},
-            {id: 2, title: 'Жесткий диск SSD 1Tb', price: 10000, quantity: 1},
-            {id: 3, title: 'Материнская плата', price: 4000, quantity: 1},
-            {id: 4, title: 'Видео-карта', price: 15000, quantity: 1},
-        ];
+        return sendRequest('/goods')
+            .then((items) => {
+                this.items = items;
+            });
     }
 
     render() {
@@ -61,6 +69,13 @@ class CartList {
         this.addedItems = [];
     }
 
+    fetchItems() {
+        return sendRequest('/cart')
+            .then((items) => {
+                this.addedItems = items;
+            })
+    }
+
     render() {
         const block = document.querySelector('.cart-drop');
         block.innerHTML = '';
@@ -68,8 +83,6 @@ class CartList {
             const addedItem = new CartItem(item);
             block.insertAdjacentHTML('beforeend', addedItem.render());
         }
-
-
     }
 
     addItems(id, title, price) {
@@ -82,7 +95,6 @@ class CartList {
             this.addedItems.push({id: id, title: title, price: price, quantity: 1});
             this.render();
         }
-
     }
 
     updateCart(product) {
@@ -107,6 +119,10 @@ class CartList {
     }
 
     init() {
+        document.querySelector('.btn-cart').addEventListener('click', () => {
+            document.querySelector('.cart-drop').classList.toggle('invisible')
+        });
+
         document.querySelectorAll('.by-btn').forEach(el => {
             el.addEventListener('click', e => {
                 this.addItems(e.target.dataset.id, e.target.dataset.title, e.target.dataset.price)
@@ -144,15 +160,23 @@ class CartItem {
                 <button class="btn-rem" data-id="${this.id}">x</button>
             </div>`
     }
-
-
 }
 
 const list = new ProductList();
-list.fetchItems();
-list.render();
+list.fetchItems().then(() => {
+    list.render();
+});
+
 const cart = new CartList();
-window.onload = () => cart.init();
+cart.fetchItems().then(() => {
+    cart.init();
+    cart.render();
+    console.log(cart.addedItems)
+});
+
+
+
+
 
 
 console.log(list.totalPrice());
