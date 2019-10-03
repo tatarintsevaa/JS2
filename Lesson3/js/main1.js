@@ -22,6 +22,7 @@ class ProductList {
         this.items = [];
     }
 
+
     fetchItems() {
         return sendRequest('/goods')
             .then((items) => {
@@ -30,8 +31,8 @@ class ProductList {
     }
 
     render() {
-        const block = document.querySelector(this.container);
-        this.items.forEach((product) => block.insertAdjacentHTML('afterbegin', new ProductItem(product)
+        const $block = document.querySelector(this.container);
+        this.items.forEach((product) => $block.insertAdjacentHTML('afterbegin', new ProductItem(product)
             .render()))
     };
 
@@ -71,19 +72,18 @@ class CartList {
     }
 
     render() {
-        const block = document.querySelector('.cart-drop');
+        const $block = document.querySelector('.cart-drop');
         if (this.addedItems.length === 0) {
-            block.innerHTML = `<p class="cart-empty">Корзина пуста</\p>`;
-            block.querySelector('<p>').classList.toggle('invisible');
+            $block.innerHTML = `<p class="cart-empty">Корзина пуста</\p>`;
         } else {
-            block.innerHTML = '';
+            $block.innerHTML = '';
             for (const item of this.addedItems) {
                 const addedItem = new CartItem(item);
-                block.insertAdjacentHTML('afterbegin', addedItem.render());
+                $block.insertAdjacentHTML('afterbegin', addedItem.render());
             }
-        }
-        block.insertAdjacentHTML('beforeend', `<p>Общая стоимость: <span class="total-price">
+            $block.insertAdjacentHTML('beforeend', `<p>Общая стоимость: <span class="total-price">
             ${this.totalPrice()}</span>&#8381;</p>`)
+        }
     }
 
     addItems(id, title, price) {
@@ -99,8 +99,8 @@ class CartList {
     }
 
     updateCart(product) {
-        const block = document.querySelector(`.cart-item[data-id="${product.id}"]`);
-        block.querySelector('.cart-item__quantity').textContent = product.quantity;
+        const $block = document.querySelector(`.cart-item[data-id="${product.id}"]`);
+        $block.querySelector('.cart-item__quantity').textContent = product.quantity;
         document.querySelector('.total-price').innerHTML = this.totalPrice();
     }
 
@@ -111,11 +111,11 @@ class CartList {
             this.updateCart(find);
         } else {
             this.addedItems.splice(this.getRemovedItemIndex(id), 1);
-            if (this.addedItems.length === 0) {
-                this.render();
-            }
-            document.querySelector(`.cart-item[data-id="${id}"]`).remove();// вот это подгядел,
-            // так как не понравилось, что он рендерит каждый раз заново
+            this.render();
+            // if (this.addedItems.length === 0) {
+            //     this.render();
+            // }
+            // document.querySelector(`.cart-item[data-id="${id}"]`).remove();
         }
 
     }
