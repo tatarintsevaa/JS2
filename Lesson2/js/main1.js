@@ -117,6 +117,7 @@ class CartList {
             if (el.target.classList.contains('btn-reb')) {
             }
             this.removeItem(el.target.dataset.id);
+            console.log(el.target.classList);
         })
     }
 
