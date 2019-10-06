@@ -5,6 +5,33 @@
     <title>Title</title>
 </head>
 <body>
-<script src="js.js"></script>
+<form class="myForm" action="#">
+    <input class="textIn" type="text">
+    <input class="textIn" type="text">
+    <input class="textIn" type="text">
+    <input class="textIn" type="text">
+    <input type="submit" value="Отправить">
+</form>
+<script>
+
+    const players = [
+        {class: 'paladin', hp: 200, dmg: 30},
+        {class: 'vampire', hp: 150, dmg: 50}
+    ];
+
+    function getPlayersNames() {
+        let inputPlayers = [];
+        document.querySelector('.myForm').addEventListener('submit', () => {
+            document.querySelectorAll('.textIn').forEach((item) => inputPlayers.push(item.value));
+            // document.querySelector('.myForm').insertAdjacentHTML('afterend', `<div>${inputPlayers}<\div>`);
+            console.log(inputPlayers);
+        });
+        return inputPlayers;
+    }
+
+    const playersNames = getPlayersNames();
+
+
+</script>
 </body>
 </html>
