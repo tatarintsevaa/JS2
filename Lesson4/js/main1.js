@@ -183,9 +183,9 @@ class CartList {
         });
 
         document.querySelector('.cart-drop').addEventListener('click', el => {
-            if (el.target.classList.contains('btn-reb')) {
+            if (el.target.classList.contains('btn-rem')) {
+                this.removeItem(+el.target.dataset.id);
             }
-            this.removeItem(+el.target.dataset.id);
         })
     }
 
