@@ -1,40 +1,53 @@
-function sendRequest(url) {
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', url);
+// function sendRequest(url) {
+//     return new Promise((resolve, reject) => {
+//         const xhr = new XMLHttpRequest();
+//         xhr.open('GET', url);
+//
+//         xhr.onreadystatechange = function () {
+//             if (xhr.readyState === XMLHttpRequest.DONE) {
+//                 if (xhr.status !== 200) {
+//                     reject();
+//                 }
+//                 const products = JSON.parse(xhr.responseText);
+//                 resolve(products)
+//             }
+//         };
+//         xhr.send();
+//     })
+// }
 
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status !== 200) {
-                    reject();
-                }
-                const products = JSON.parse(xhr.responseText);
-                resolve(products)
-            }
-        };
-        xhr.send();
-    } )
-}
+// function sendRequest(url) {
+//     return fetch(url).then(response => response.json())
+// }
 
 class ProductList {
     constructor(container) {
         this.container = container;
         this.items = [];
+        this.filtredItems = [];
     }
 
 
     fetchItems() {
-        return sendRequest('/goods')
+        return fetch('/goods')
+            .then(response => response.json())
             .then((items) => {
                 this.items = items;
+                this.filtredItems = items;
             });
     }
 
     render() {
         const $block = document.querySelector(this.container);
-        this.items.forEach((product) => $block.insertAdjacentHTML('afterbegin', new ProductItem(product)
+        $block.innerHTML = '';
+        this.filtredItems.forEach((product) => $block.insertAdjacentHTML('afterbegin', new ProductItem(product)
             .render()))
     };
+
+    filter(queryText) {
+        const regExp = new RegExp(queryText, 'i');
+        this.filtredItems = this.items.filter(product => regExp.test(product.title));
+    }
 
 
 }
@@ -65,10 +78,12 @@ class CartList {
     }
 
     fetchItems() {
-        return sendRequest('/cart')
+        return fetch('/cart')
+            .then(response => response.json())
             .then((items) => {
                 this.addedItems = items;
             })
+            .catch(error => console.log(error));
     }
 
     render() {
@@ -86,16 +101,36 @@ class CartList {
         }
     }
 
-    addItems(id, title, price) {
-        let find = this.addedItems.find(product => product.id === id);
+    addItems(item) {
+        let find = this.addedItems.find(product => product.id === +item.id);
         if (find) {
-            find.quantity++;
-            // console.log(find);
-            this.updateCart(find);
+            fetch(`/cart/${find.id}`, {
+                method: 'PATCH',
+                body: JSON.stringify({quantity: find.quantity++}),
+                headers: {
+                    'Content-type': 'application/json',
+                },
+            })
+                .then((response) => response.json())
+                .then(() => {
+                    this.updateCart(find);
+                })
+
         } else {
-            this.addedItems.push({id: id, title: title, price: price, quantity: 1});
-            this.render();
+            fetch('/cart', {
+                method: 'POST',
+                body: JSON.stringify({id: +item.id, title: item.title, price: +item.price, quantity: 1}),
+                headers: {
+                    'Content-type': 'application/json',
+                },
+            })
+                .then((response) => response.json())
+                .then((item) => {
+                    this.addedItems.push({id: +item.id, title: item.title, price: +item.price, quantity: 1});
+                    this.render();
+                })
         }
+
     }
 
     updateCart(product) {
@@ -107,22 +142,30 @@ class CartList {
     removeItem(id) {
         let find = this.addedItems.find(product => product.id === id);
         if (find.quantity > 1) {
-            find.quantity--;
-            this.updateCart(find);
+            fetch(`/cart/${find.id}`, {
+                method: 'PATCH',
+                body: JSON.stringify({quantity: find.quantity--}),
+                headers: {
+                    'Content-type': 'application/json',
+                },
+            })
+                .then((response) => response.json())
+                .then(() => {
+                    this.updateCart(find);
+                })
         } else {
-            this.addedItems.splice(this.getRemovedItemIndex(id), 1);
-            this.render();
-            // if (this.addedItems.length === 0) {
-            //     this.render();
-            // }
-            // document.querySelector(`.cart-item[data-id="${id}"]`).remove();
+            fetch(`/cart/${id}`, {
+                method: 'DELETE',
+            })
+                .then(response => response.json())
+                .then(() => {
+                    const index = this.addedItems.findIndex(x => x.id === id);
+                    this.addedItems.splice(index, 1);
+                    this.render();
+                });
         }
-
     }
 
-    getRemovedItemIndex(id) {
-        return this.addedItems.findIndex(x => x.id === id)
-    }
 
     init() {
         document.querySelector('.btn-cart').addEventListener('click', () => {
@@ -131,7 +174,9 @@ class CartList {
 
         document.querySelectorAll('.by-btn').forEach(el => {
             el.addEventListener('click', e => {
-                this.addItems(+e.target.dataset.id, e.target.dataset.title, +e.target.dataset.price)
+                // this.addItems(+e.target.dataset.id, e.target.dataset.title, +e.target.dataset.price)
+                this.addItems(e.target.dataset)
+                console.log(e.target.dataset);
             })
         });
 
@@ -139,7 +184,6 @@ class CartList {
             if (el.target.classList.contains('btn-reb')) {
             }
             this.removeItem(+el.target.dataset.id);
-            console.log(el.target.classList);
         })
     }
 
@@ -181,8 +225,22 @@ const cart = new CartList();
 cart.fetchItems().then(() => {
     cart.init();
     cart.render();
-    console.log(cart.addedItems)
 });
+
+// document.querySelector('.query').addEventListener('input', evt => {
+//     const queryText = document.querySelector('.query').value;
+//     list.filter(queryText);
+//     list.render();
+// });
+
+// по нажаитю на кнопку думаю правильней
+document.querySelector('.search-btn').addEventListener('click', evt => {
+    const queryText = document.querySelector('.query').value;
+    list.filter(queryText);
+    list.render();
+});
+
+
 
 
 
