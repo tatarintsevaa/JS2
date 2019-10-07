@@ -1,38 +1,41 @@
-/*
-ответ на 1ый вопрос.
-Должны быть родительские классы Item и List от которых будут наследоваться классы товаров, товаров корзины и списков
- тоовара и корзины.
- У товаров должны быть методы добавления товара( в списке товаров) в корзину по клику.У товаров в корзине -
- удаления/изменения количества и метод подсчета общей стоимости.
- */
+function sendRequest(url) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status !== 200) {
+                    reject();
+                }
+                const products = JSON.parse(xhr.responseText);
+                resolve(products)
+            }
+        };
+        xhr.send();
+    } )
+}
 
 class ProductList {
-    constructor() {
+    constructor(container) {
+        this.container = container;
         this.items = [];
     }
 
+
     fetchItems() {
-        this.items = [
-            {id: 1, title: 'Компьютерная мышь', price: 400, quantity: 1},
-            {id: 2, title: 'Жесткий диск SSD 1Tb', price: 10000, quantity: 1},
-            {id: 3, title: 'Материнская плата', price: 4000, quantity: 1},
-            {id: 4, title: 'Видео-карта', price: 15000, quantity: 1},
-        ];
+        return sendRequest('/goods')
+            .then((items) => {
+                this.items = items;
+            });
     }
 
     render() {
-        const block = document.querySelector('.products');
-        this.items.forEach((product) => block.insertAdjacentHTML('afterbegin', new ProductItem(product)
+        const $block = document.querySelector(this.container);
+        this.items.forEach((product) => $block.insertAdjacentHTML('afterbegin', new ProductItem(product)
             .render()))
     };
 
-    /**
-     * Метод суммы товаров
-     * @returns {number} Возвращает сумму всех товаров
-     */
-    totalPrice() {
-        return this.items.reduce((sum, current) => sum + current.price, 0);
-    }
 
 }
 
@@ -61,15 +64,26 @@ class CartList {
         this.addedItems = [];
     }
 
+    fetchItems() {
+        return sendRequest('/cart')
+            .then((items) => {
+                this.addedItems = items;
+            })
+    }
+
     render() {
-        const block = document.querySelector('.cart-drop');
-        block.innerHTML = '';
-        for (const item of this.addedItems) {
-            const addedItem = new CartItem(item);
-            block.insertAdjacentHTML('beforeend', addedItem.render());
+        const $block = document.querySelector('.cart-drop');
+        if (this.addedItems.length === 0) {
+            $block.innerHTML = `<p class="cart-empty">Корзина пуста</\p>`;
+        } else {
+            $block.innerHTML = '';
+            for (const item of this.addedItems) {
+                const addedItem = new CartItem(item);
+                $block.insertAdjacentHTML('afterbegin', addedItem.render());
+            }
+            $block.insertAdjacentHTML('beforeend', `<p>Общая стоимость: <span class="total-price">
+            ${this.totalPrice()}</span>&#8381;</p>`)
         }
-
-
     }
 
     addItems(id, title, price) {
@@ -82,12 +96,12 @@ class CartList {
             this.addedItems.push({id: id, title: title, price: price, quantity: 1});
             this.render();
         }
-
     }
 
     updateCart(product) {
-        const block = document.querySelector(`.cart-item[data-id="${product.id}"]`);
-        block.querySelector('.cart-item__quantity').textContent = product.quantity;
+        const $block = document.querySelector(`.cart-item[data-id="${product.id}"]`);
+        $block.querySelector('.cart-item__quantity').textContent = product.quantity;
+        document.querySelector('.total-price').innerHTML = this.totalPrice();
     }
 
     removeItem(id) {
@@ -96,8 +110,12 @@ class CartList {
             find.quantity--;
             this.updateCart(find);
         } else {
-            this.addedItems.splice(this.getRemovedItemIndex(id));
+            this.addedItems.splice(this.getRemovedItemIndex(id), 1);
             this.render();
+            // if (this.addedItems.length === 0) {
+            //     this.render();
+            // }
+            // document.querySelector(`.cart-item[data-id="${id}"]`).remove();
         }
 
     }
@@ -107,18 +125,26 @@ class CartList {
     }
 
     init() {
+        document.querySelector('.btn-cart').addEventListener('click', () => {
+            document.querySelector('.cart-drop').classList.toggle('invisible')
+        });
+
         document.querySelectorAll('.by-btn').forEach(el => {
             el.addEventListener('click', e => {
-                this.addItems(e.target.dataset.id, e.target.dataset.title, e.target.dataset.price)
+                this.addItems(+e.target.dataset.id, e.target.dataset.title, +e.target.dataset.price)
             })
         });
 
         document.querySelector('.cart-drop').addEventListener('click', el => {
             if (el.target.classList.contains('btn-reb')) {
             }
-            this.removeItem(el.target.dataset.id);
+            this.removeItem(+el.target.dataset.id);
             console.log(el.target.classList);
         })
+    }
+
+    totalPrice() {
+        return this.addedItems.reduce((sum, current) => sum + current.price * current.quantity, 0);
     }
 
 }
@@ -140,20 +166,24 @@ class CartItem {
                 <img src="${this.image}" alt="img">
                 <h5 class="cart-item__text">${this.title}</h5>
                 <p class="cart-item__quantity">${this.quantity}</p>
-                <p class="cart-item__price">${this.price}</p>
+                <p class="cart-item__price">${this.price} &#8381;</p>
                 <button class="btn-rem" data-id="${this.id}">x</button>
             </div>`
     }
-
-
 }
 
-const list = new ProductList();
-list.fetchItems();
-list.render();
+const list = new ProductList('.products');
+list.fetchItems().then(() => {
+    list.render();
+});
+
 const cart = new CartList();
-window.onload = () => cart.init();
+cart.fetchItems().then(() => {
+    cart.init();
+    cart.render();
+    console.log(cart.addedItems)
+});
 
 
-console.log(list.totalPrice());
+
 

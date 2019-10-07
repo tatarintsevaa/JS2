@@ -24,9 +24,34 @@ header {
 .cart-item {
   display: flex;
   justify-content: space-between;
-  width: 250px;
+  width: 280px;
   padding: 5px;
   align-items: center; }
+  .cart-item__text {
+    width: 100px; }
+  .cart-item__quantity {
+    width: 10px; }
+  .cart-item__price {
+    width: 60px; }
+
+.cart-empty {
+  padding: 10px;
+  font-size: 20px; }
+
+.btn-rem {
+  color: #ffffff;
+  background-color: #3C3F41;
+  font-weight: 400;
+  width: 20px;
+  height: 20px;
+  border: none;
+  line-height: 20px;
+  transition: all 0.2s;
+  outline: none; }
+  .btn-rem:hover {
+    color: #3C3F41;
+    background-color: #ffffff;
+    border: 1px solid #3C3F41; }
 
 .invisible {
   display: none; }
