@@ -1,0 +1,123 @@
+* {
+  margin: 0;
+  padding: 0; }
+
+header {
+  height: 100px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #3C3F41;
+  margin-bottom: 20px; }
+
+.cart-block {
+  position: relative; }
+
+.cart-drop {
+  position: absolute;
+  margin-top: 10px;
+  background-color: #ffffff;
+  border: 1px solid #eeeeee;
+  right: 50px;
+  padding: 5px; }
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  width: 280px;
+  padding: 5px;
+  align-items: center; }
+  .cart-item__text {
+    width: 100px; }
+  .cart-item__quantity {
+    width: 10px; }
+  .cart-item__price {
+    width: 60px; }
+
+.cart-empty {
+  padding: 10px;
+  font-size: 20px; }
+
+.btn-rem {
+  color: #ffffff;
+  background-color: #3C3F41;
+  font-weight: 400;
+  width: 20px;
+  height: 20px;
+  border: none;
+  line-height: 20px;
+  transition: all 0.2s;
+  outline: none; }
+  .btn-rem:hover {
+    color: #3C3F41;
+    background-color: #ffffff;
+    border: 1px solid #3C3F41; }
+
+.invisible {
+  display: none; }
+
+.btn-cart {
+  text-transform: uppercase;
+  font-size: 20px;
+  height: 40px;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-right: 100px;
+  border-radius: 10px 10px 10px 10px;
+  border: 1px solid #fff;
+  background-color: #fff;
+  outline: none;
+  line-height: 20px;
+  transition: all 0.2s; }
+  .btn-cart:hover {
+    cursor: pointer;
+    background-color: #3C3F41;
+    color: #ffffff; }
+
+.products {
+  width: 60%;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-bottom: 10px; }
+
+main {
+  display: flex;
+  justify-content: center; }
+
+.product-item {
+  min-height: 250px;
+  width: 150px;
+  background-color: #eeeeee;
+  box-sizing: border-box;
+  border-radius: 10px 10px 10px 10px; }
+  .product-item__text {
+    height: 100px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; }
+    .product-item__text h3 {
+      font-size: 18px; }
+  .product-item img {
+    border-radius: 10px 10px 0 0; }
+
+.by-btn {
+  font-size: 18px;
+  width: max-content;
+  height: 35px;
+  padding-right: 5px;
+  padding-left: 5px;
+  border: 1px solid #3C3F41;
+  border-radius: 10px 10px 10px 10px;
+  background-color: #3C3F41;
+  outline: none;
+  line-height: 18px;
+  transition: all 0.2s;
+  color: #fff; }
+  .by-btn:hover {
+    cursor: pointer;
+    background-color: #eeeeee;
+    color: black; }
+
+/*# sourceMappingURL=style.css.map */
