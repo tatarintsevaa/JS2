@@ -106,14 +106,16 @@ class CartList {
         if (find) {
             fetch(`/cart/${find.id}`, {
                 method: 'PATCH',
-                body: JSON.stringify({quantity: find.quantity++}),
+                body: JSON.stringify({quantity: find.quantity}),
                 headers: {
                     'Content-type': 'application/json',
                 },
             })
                 .then((response) => response.json())
-                .then(() => {
+                .then((data) => {
+                    find.quantity++;
                     this.updateCart(find);
+                    console.log(data);
                 })
 
         } else {
@@ -176,7 +178,7 @@ class CartList {
             el.addEventListener('click', e => {
                 // this.addItems(+e.target.dataset.id, e.target.dataset.title, +e.target.dataset.price)
                 this.addItems(e.target.dataset)
-                console.log(e.target.dataset);
+                // console.log(e.target.dataset);
             })
         });
 
