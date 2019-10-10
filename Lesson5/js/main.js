@@ -13,7 +13,6 @@ const app = new Vue({
         handleFilter() {
             const regExp = new RegExp(this.query, 'i');
             this.filteredItems = this.items.filter(product => regExp.test(product.title));
-            console.log('qqq')
         },
         handleAddItems(item) {
             let find = this.cartItems.find(product => product.id === +item.id);
@@ -74,7 +73,7 @@ const app = new Vue({
             .then((data) => {
                 this.items = data;
                 this.filteredItems = data;
-            })
+            });
 
         fetch('/cart')
             .then((result) => result.json())

@@ -11,12 +11,12 @@
 <div id="root">
     <header>
         <div class="search">
-            <input type="text" v-model="query" placeholder="Поиск" class="query">
+            <input type="text" v-model="query" placeholder="Поиск" class="query" @input="handleFilter">
             <button class="search-btn" @click="handleFilter"><i class="fas fa-search"></i></button>
         </div>
         <div class="cart">
             <button class="btn-cart" type="button" @click="showCart = !showCart">Корзина</button>
-            <div class="cart-drop" v-show="showCart">
+            <div class="cart-drop" v-show="showCart" >
                 <div class="cart-item" v-for="cartItem in cartItems" :key="cartItem.id">
                     <img :src="cartImageCatalog" alt="img">
                     <h5 class="cart-item__text">{{cartItem.title}}</h5>
@@ -24,7 +24,8 @@
                     <p class="cart-item__price">{{cartItem.price}} &#8381;</p>
                     <button class="btn-rem" @click="handleRemoveItems(cartItem.id)">x</button>
                 </div>
-                <p>Общая стоимость: <span class="total-price">{{totalPrice}}</span>&#8381;</p>
+                <div class="cart-empty" v-if="!cartItems.length">Корзина пуста</div>
+                <p v-else>Общая стоимость: <span class="total-price" >{{totalPrice}}</span>&#8381;</p>
             </div>
         </div>
     </header>
