@@ -1,24 +1,4 @@
-// function sendRequest(url) {
-//     return new Promise((resolve, reject) => {
-//         const xhr = new XMLHttpRequest();
-//         xhr.open('GET', url);
-//
-//         xhr.onreadystatechange = function () {
-//             if (xhr.readyState === XMLHttpRequest.DONE) {
-//                 if (xhr.status !== 200) {
-//                     reject();
-//                 }
-//                 const products = JSON.parse(xhr.responseText);
-//                 resolve(products)
-//             }
-//         };
-//         xhr.send();
-//     })
-// }
 
-// function sendRequest(url) {
-//     return fetch(url).then(response => response.json())
-// }
 
 class ProductList {
     constructor(container) {

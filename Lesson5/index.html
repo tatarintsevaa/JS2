@@ -3,26 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Интернет-магазин</title>
-    <link rel="stylesheet" href="style/style.css">
     <script src="https://kit.fontawesome.com/b2ca92c156.js" crossorigin="anonymous"></script>
-
+    <link rel="stylesheet" href="style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
-<header>
-    <div class="search">
-        <input type="text" placeholder="Поиск" class="query">
-        <button class="search-btn"><i class="fas fa-search"></i></button>
-    </div>
-    <div class="cart">
-        <button class="btn-cart" type="button">Корзина</button>
-        <div class="cart-drop invisible">
+<div id="root">
+    <header>
+        <div class="search">
+            <input type="text" v-model="query" placeholder="Поиск" class="query">
+            <button class="search-btn" @click="handleFilter"><i class="fas fa-search"></i></button>
         </div>
-    </div>
-</header>
-<main>
-    <div class="products"></div>
-</main>
-<script src="js/main1.js"></script>
+        <div class="cart">
+            <button class="btn-cart" type="button" @click="showCart = !showCart">Корзина</button>
+            <div class="cart-drop" v-show="showCart">
+                <div class="cart-item" v-for="cartItem in cartItems" :key="cartItem.id">
+                    <img :src="cartImageCatalog" alt="img">
+                    <h5 class="cart-item__text">{{cartItem.title}}</h5>
+                    <p class="cart-item__quantity">{{cartItem.quantity}}</p>
+                    <p class="cart-item__price">{{cartItem.price}} &#8381;</p>
+                    <button class="btn-rem" @click="handleRemoveItems(cartItem.id)">x</button>
+                </div>
+                <p>Общая стоимость: <span class="total-price">{{totalPrice}}</span>&#8381;</p>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="products">
+            <div v-for="item in filteredItems" :key="item.id" class="product-item" >
+                <img :src="imageCatalog" alt="photo">
+                <div class="product-item__text">
+                    <h3>{{item.title}}</h3>
+                    <p>{{item.price}} &#8381;</p>
+                    <button @click="handleAddItems(item)" class="by-btn">Купить</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="js/main.js"></script>
 <!-- Ready to use Font Awesome. Activate interlock. Dynotherms - connected. Infracells - up. Icons are go! -->
 </body>
 </html>
