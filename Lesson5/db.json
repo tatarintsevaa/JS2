@@ -25,5 +25,18 @@
       "quantity": 1
     }
   ],
-  "cart": []
+  "cart": [
+    {
+      "id": 3,
+      "title": "Материнская плата",
+      "price": 4000,
+      "quantity": 1
+    },
+    {
+      "id": 2,
+      "title": "Жесткий диск SSD 1Tb",
+      "price": 10000,
+      "quantity": 2
+    }
+  ]
 }
