@@ -10,7 +10,7 @@
 <body>
 <div id="root">
     <header>
-        <search-component :filtereditems="filteredItems" :items="items"></search-component>
+        <search-component @filter="filter"></search-component>
         <cart-component :items="cartItems" @remove="handleRemoveClick"></cart-component>
     </header>
     <main>

@@ -103,7 +103,8 @@ const SearchComponent = {
     },
     template: `<div class="search">
                 <input type="text" v-model="query" placeholder="Поиск" class="query">
-                <button class="search-btn" @click="$parent.handleFilter(query)"><i class="fas fa-search"></i></button>
+<!--                <button class="search-btn" @click="$parent.handleFilter(query)"><i class="fas fa-search"></i></button>-->
+                <button class="search-btn" @click="$emit('filter', query)"><i class="fas fa-search"></i></button>
                </div>`,
 };
 
@@ -139,14 +140,13 @@ const ErrorComponent = {
 const app = new Vue({
     el: '#root',
     data: {
+        query:'',
         items: [],
-        filteredItems: [],
         cartItems: [],
     },
     methods: {
-        handleFilter(searchText) {
-            const regExp = new RegExp(searchText, 'i');
-            this.filteredItems = this.items.filter(product => regExp.test(product.title));
+        filter(query) {
+          this.query = query;
         },
         handleBuyClick(item) {
             let find = this.cartItems.find(product => product.id === +item.id);
@@ -199,14 +199,17 @@ const app = new Vue({
     computed: {
         totalPrice() {
             return this.cartItems.reduce((sum, current) => sum + current.price * current.quantity, 0);
-        }
+        },
+        filteredItems() {
+            const regExp = new RegExp(this.query, 'i');
+            return this.items.filter(product => regExp.test(product.title));
+        },
     },
     mounted() {
         fetch('/goods')
             .then((result) => result.json())
             .then((data) => {
                 this.items = data;
-                this.filteredItems = data;
             })
             .catch((error) => {
                 this.$refs.error.errorText(error);
