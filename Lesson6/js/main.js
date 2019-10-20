@@ -5,9 +5,15 @@ const ItemComponent = {
                 <div class="product-item__text">
                     <h3>{{product.title}}</h3>
                     <p>{{product.price}} &#8381;</p>
-                    <button @click="$parent.$parent.handleBuyClick(product)" class="by-btn">Купить</button>
+<!--                    <button @click="$parent.$parent.handleBuyClick(product)" class="by-btn">Купить</button>-->
+                    <button @click="handleBuyClick" class="by-btn">Купить</button>
                 </div>
             </div>`,
+    methods: {
+        handleBuyClick() {
+            this.$emit('buy')
+        }
+    }
 
 };
 
@@ -24,9 +30,16 @@ const ItemListComponent = {
                       :key="item.id" 
                       :product="item" 
                       :imageCatalog="imageCatalog"
+                      @buy="handleBuyClick(item)"
                       >
                 </product>
              </div>`,
+    methods: {
+        handleBuyClick(item) {
+            this.$emit('buy', item)
+            console.log(item);
+        }
+    },
 
     components: {
         'product': ItemComponent,
@@ -40,8 +53,14 @@ const CartItemComponent = {
                     <h5 class="cart-item__text">{{cartItem.title}}</h5>
                     <p class="cart-item__quantity">{{cartItem.quantity}}</p>
                     <p class="cart-item__price">{{cartItem.price}} &#8381;</p>
-                    <button class="btn-rem" @click="$parent.$parent.handleRemoveClick(cartItem.id)">x</button>
+                    <button class="btn-rem" @click="handleRemoveClick">x</button>
+<!--                    <button class="btn-rem" @click="$parent.$parent.handleRemoveClick(cartItem.id)">x</button>-->
                 </div>`,
+    methods: {
+        handleRemoveClick() {
+            this.$emit('remove');
+        }
+    }
 };
 
 
@@ -59,15 +78,21 @@ const CartComponent = {
                 <cart-item-component v-for="item in items" 
                                      :cartItem="item"
                                      :key="item.id" 
-                                     :cartImageCatalog="cartImageCatalog">
+                                     :cartImageCatalog="cartImageCatalog"
+                                     @remove="handleRemoveClick(item.id)">
                 </cart-item-component>
                 <div class="cart-empty" v-if="!items.length">Корзина пуста</div>
                 <p v-else>Общая стоимость: <span class="total-price" >{{$parent.totalPrice}}</span>&#8381;</p>
             </div>
         </div>`,
+   methods: {
+       handleRemoveClick(id) {
+           this.$emit('remove', id)
+}
+   },
     components: {
         'cart-item-component': CartItemComponent,
-    }
+    },
 };
 
 const SearchComponent = {

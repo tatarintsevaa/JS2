@@ -11,10 +11,10 @@
 <div id="root">
     <header>
         <search-component :filtereditems="filteredItems" :items="items"></search-component>
-        <cart-component :items="cartItems"></cart-component>
+        <cart-component :items="cartItems" @remove="handleRemoveClick"></cart-component>
     </header>
     <main>
-        <item-list-component :items="filteredItems"></item-list-component>
+        <item-list-component :items="filteredItems" @buy="handleBuyClick"></item-list-component>
         <error-component ref="error"></error-component>
     </main>
 </div>
