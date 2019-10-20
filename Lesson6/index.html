@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Интернет-магазин</title>
+    <script src="https://kit.fontawesome.com/b2ca92c156.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<div id="root">
+    <header>
+        <search-component :filtereditems="filteredItems" :items="items"></search-component>
+        <cart-component :items="cartItems" @remove="handleRemoveClick"></cart-component>
+    </header>
+    <main>
+        <item-list-component :items="filteredItems" @buy="handleBuyClick"></item-list-component>
+        <error-component ref="error"></error-component>
+    </main>
+</div>
+<script src="js/main.js"></script>
+<!-- Ready to use Font Awesome. Activate interlock. Dynotherms - connected. Infracells - up. Icons are go! -->
+</body>
+</html>
