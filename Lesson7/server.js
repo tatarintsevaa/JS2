@@ -8,15 +8,15 @@ app.use(express.json());
 
 
 app.get('/goods', (req, res) => {
-   fs.readFile('./catalog.json', 'utf-8', (err, data) => {
-    res.send(data);
-   });
+    fs.readFile('./catalog.json', 'utf-8', (err, data) => {
+        res.send(data);
+    });
 });
 
 app.get('/cart', (req, res) => {
-   fs.readFile('./cart.json', 'utf-8', (err, data) => {
-    res.send(data);
-   });
+    fs.readFile('./cart.json', 'utf-8', (err, data) => {
+        res.send(data);
+    });
 });
 
 app.post('/cart', (req, res) => {
@@ -28,7 +28,7 @@ app.post('/cart', (req, res) => {
         parsedData.push(req.body);
         fs.writeFile('./cart.json', JSON.stringify(parsedData), err => {
             res.send(req.body);
-        })
+        });
     });
 });
 
